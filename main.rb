@@ -1,9 +1,9 @@
 require 'dxruby'
-require_relative 'map'
+require_relative "board"
 
-map = Map.new
+board = Board.new
 
 Window.loop do
-  map.update
-  map.draw
+  board.update
+  board.draw
 end
