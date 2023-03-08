@@ -1,4 +1,5 @@
 class Hexagon
+    # attr_accessor :x, :y
     def initialize(x,y,image)
         @x = x
         @y = y
