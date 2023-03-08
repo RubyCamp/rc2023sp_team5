@@ -53,8 +53,6 @@ p hexagons
 Window.loop do
   map.update
   map.draw
-  player.update
-  player.draw 
   current_director = current_director.play
   Sprite.check(player,hexagons)
   hexagons.each do |hexagon|
