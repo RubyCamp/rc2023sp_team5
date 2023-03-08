@@ -35,12 +35,16 @@ end
 Window.width = 800
 Window.height = 600
 Window.caption = "Team5 Game"
+p hexagons
+
 
 Window.loop do
   map.update
   map.draw
+  Sprite.check(player,hexagons)
   hexagons.each do |hexagon|
     hexagon.draw
-  player.mousepos
   end
+  player.update
+  player.draw
 end
