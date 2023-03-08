@@ -22,6 +22,7 @@ class Map
     cx, cy = mx / LINE_SEP, my / LINE_SEP
     if Input.mouse_push?(M_LBUTTON)
       set_chip(cx, cy)
+      
      # judge(cx, cy)
     end
   end
