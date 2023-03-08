@@ -31,7 +31,7 @@ class Map
 
   def draw
     draw_font
-    # draw_lines
+    #   draw_lines
     # @data.each_with_index do |line, dy|
     #   line.each_with_index do |chip, dx|
     #     Window.draw(dx * LINE_SEP, dy * LINE_SEP, @chips[chip]) if chip >= 0
