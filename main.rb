@@ -33,6 +33,7 @@ Window.caption = "Team5 Game"
 
 Window.loop do
   map.update
+  map.draw
   hexagons.each do |hexagon|
     hexagon.draw
   end
