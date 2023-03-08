@@ -25,8 +25,6 @@ class Board
   # 手番のプレイヤーを表す変数
     @first_player = first_player
     @second_player = second_player
-    p @first_player
-    p @second_player
   end
 
   def update
@@ -51,10 +49,10 @@ class Board
           # 石を置く
           set_chip(cx, cy)
           # 盤面初期時に作成したインスタンス変数@random_numがターン数と一致した場合
-          if @random_num == @turn 
-          # 自分と相手の石を反転させる処理
-            reverse_color
-          end
+          # if @random_num == @turn 
+          # # 自分と相手の石を反転させる処理
+          #   reverse_color
+          # end
 
           # プレイヤーの点数を加点する
           if @turn_color == 1
@@ -66,9 +64,9 @@ class Board
       end
     end
     # ゲーム終了を監視する
-    # if game_end?
-    #   puts 'ゲームを終了します'
-    # end
+    if game_end?
+      puts 'ゲームを終了します'
+    end
   end
 
   # コマを表示
@@ -140,6 +138,8 @@ class Board
       reverse_col += direction[1]
       # 一時的な配列に格納する
       tmp_pos << [reverse_row, reverse_col]
+      p "tmp_pos"
+      p tmp_pos
       # 見つけた方向を捜査していく
       while true
         # 盤面の外を探索しないように範囲を限定する
@@ -151,6 +151,10 @@ class Board
             reverse_col += direction[1]
       
             tmp_pos << [reverse_row, reverse_col]
+            # ループの中で配列の外を参照しそうになった時、ループを外に出せる
+            if reverse_col < 0 || reverse_col > 7 || reverse_row < 0 || reverse_row > 7
+              break
+            end
             #puts "探索中"
           # 手番と同じ色のコマに到達したらフラグをtrueにして探索終了
           elsif @data[reverse_col][reverse_row] == @turn_color
@@ -187,7 +191,7 @@ class Board
 
   # コマの色をすべて逆にするイベント用のメソッド
   def reverse_color
-    # 盤面のコマを確認して1を0に、0を1にしてひっくり返す         
+    # 盤面の全てのコマを確認して1を0に、0を1にしてひっくり返す         
     @data.each do |row|
       row.each_with_index do |item,i|
         if item == 0
@@ -200,19 +204,19 @@ class Board
   end
 
   # ゲームを終了するかどうか判定する関数
-  # def game_end?
-  #   game_end = false
-  # # すべてのマスに対し、judgeメソッドを実行し
-  #   @data.each_with_index do |data, i|
-  #     data.each_with_index do |index, j|
-  #       unless return_reverse_pos(judge(i, j), i, j).empty?
-  #         return game_end        
-  #       end
-  #     end
-  #   end
-  #   game_end = true
-  #   return game_end
-  # end
+  def game_end?
+    game_end = false
+  # すべてのマスに対し、judgeメソッドを実行し
+    @data.each_with_index do |data, i|
+      data.each_with_index do |index, j|
+        unless return_reverse_pos(judge(i, j), i, j).empty?
+          return game_end        
+        end
+      end
+    end
+    game_end = true
+    return game_end
+  end
  
   #　盤面を描画する
   def draw_lines
