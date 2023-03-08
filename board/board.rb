@@ -29,7 +29,6 @@ class Board
     p @second_player
   end
 
-
   def update
     mx, my = Input.mouse_x, Input.mouse_y
     cx, cy = mx / LINE_SEP, my / LINE_SEP
@@ -45,29 +44,18 @@ class Board
         # ひっくり返せるマスがない場合
         if reverse_pos.empty?
           puts "ひっくり返せるコマがないよ"
+        # ひっくり返せるマスがある場合
         else
           # ひっくり返す
           reverse_stones(reverse_pos)
           # 石を置く
           set_chip(cx, cy)
-
-        # ひっくり返せるマスがある場合
-        # 自分と相手の石を反転させる処理
-          if @random_num == @turn          
-            @data.each do |row|
-              row.each_with_index do |item,i|
-                if item == 0
-                  row[i] = 1
-                  p "青をひっくり返した"
-                elsif item == 1
-                  row[i] = 0
-                  p "黄色をひっくり返した"
-                end
-              end
-              #p @data
-            end
+          # 盤面初期時に作成したインスタンス変数@random_numがターン数と一致した場合
+          if @random_num == @turn 
+          # 自分と相手の石を反転させる処理
+            reverse_color
           end
-          
+
           # プレイヤーの点数を加点する
           if @turn_color == 1
             @first_player.point +=1
@@ -181,7 +169,7 @@ class Board
     return reverse_pos
   end
   
-  # コマを置いた時、隣接する相手のコマを反転させる関数
+  # コマを置いた時、隣接する相手のコマを反転させるメソッド
   def reverse_stones(reverse_pos)
     #return_reverse_posメソッドの返り値の二次元配列を受け取る
     # 間にあった相手の石を裏返す
@@ -195,7 +183,20 @@ class Board
         @second_player.point +=1
       end
     end
+  end
 
+  # コマの色をすべて逆にするイベント用のメソッド
+  def reverse_color
+    # 盤面のコマを確認して1を0に、0を1にしてひっくり返す         
+    @data.each do |row|
+      row.each_with_index do |item,i|
+        if item == 0
+          row[i] = 1
+        elsif item == 1
+          row[i] = 0
+        end
+      end
+    end
   end
 
   # ゲームを終了するかどうか判定する関数
