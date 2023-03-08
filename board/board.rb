@@ -20,6 +20,8 @@ class Board
       Image.new(LINE_SEP, LINE_SEP).circle_fill(LINE_SEP / 2, LINE_SEP / 2, LINE_SEP / 2, C_BLUE),
       Image.new(LINE_SEP, LINE_SEP).circle_fill(LINE_SEP / 2, LINE_SEP / 2, LINE_SEP / 2, C_YELLOW)
     ]
+    @random_num = rand(2..10)
+    p @random_num
   end
 
   def update
@@ -37,12 +39,27 @@ class Board
         # ひっくり返せるマスがない場合
         if reverse_pos.empty?
           puts "ひっくり返せるコマがないよ"
-        # ひっくり返せるマスがある場合
         else
           # ひっくり返す
           reverse_stones(reverse_pos)
           # 石を置く
           set_chip(cx, cy)
+        # ひっくり返せるマスがある場合
+          if @random_num == @turn          
+            @data.each do |row|
+              row.each_with_index do |item,i|
+                if item == 0
+                  row[i] = 1
+                  p "青をひっくり返した"
+                elsif item == 1
+                  row[i] = 0
+                  p "黄色をひっくり返した"
+                end
+              end
+              #p @data
+            end
+          end
+          
         end
       end
     end
