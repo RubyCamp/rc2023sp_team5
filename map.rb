@@ -1,5 +1,5 @@
 class Map
-  LINE_SEP = 64
+  LINE_SEP = 80
 
   def initialize
     @data = []
@@ -22,19 +22,19 @@ class Map
     cx, cy = mx / LINE_SEP, my / LINE_SEP
     if Input.mouse_push?(M_LBUTTON)
       set_chip(cx, cy)
-      judge(cx, cy)
     end
   end
 
-  def draw
-    draw_lines
-    @data.each_with_index do |line, dy|
-      line.each_with_index do |chip, dx|
-        Window.draw(dx * LINE_SEP, dy * LINE_SEP, @chips[chip]) if chip >= 0
-      end
-    end
+  def draw(image)
+    Window.draw(0,0,image)
   end
-
+  # def draw
+  #   draw_lines
+  #   @data.each_with_index do |line, dy|
+  #     line.each_with_index do |chip, dx|
+  #       Window.draw(dx * LINE_SEP, dy * LINE_SEP, @chips[chip]) if chip >= 0
+  #     end
+  #   end
   private
 
   def set_chip(x, y)
@@ -42,9 +42,13 @@ class Map
     @turn += 1
   end
 
+  def draw_Hex(image)
+    Window.draw(0,0,image)
+  end
+
   def draw_lines
     LINE_SEP.step(Window.width, LINE_SEP) do |dx|
-      Window.draw_line(dx, 0, dx, Window.height, C_WHITE)
+      Window.draw_line(dx, 0, dx, Window.height, C_WHITE) #（x始点,y始点,x終点,y終点)
     end
 
     LINE_SEP.step(Window.height, LINE_SEP) do |dy|
