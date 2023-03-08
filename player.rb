@@ -1,6 +1,6 @@
 class Player < Sprite
     @@heximage = Image.load('image/mousepoint.png')
-    def initialize(mx=0,my=0)
+    def initialize(mx=0,my=0,name = "default",point = 0)
         @mx = mx
         @my = my
         self.image = @@heximage
