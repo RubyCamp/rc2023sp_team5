@@ -147,7 +147,7 @@ class Board
           elsif @data[reverse_col][reverse_row] == @turn_color
             reverse_flag = true
             #puts "手番と同じ色のコマが見つかったので探索終了"
-            # tmp_posをreverse_posに追加する
+            # tmp_posをreverse_posに追加する。ただし、配列の最後は不要なので除く
             reverse_pos += tmp_pos.slice(0..-2)
             break
           # 何も置かれていないコマの場合も探索終了
