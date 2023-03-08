@@ -2,7 +2,7 @@ require 'dxruby'
 require_relative 'map'
 require_relative "hexagon"
 
-heximage = Image.load('images/Hex50x58.png')
+heximage = Image.load('image/Hex50x58.png')
 map = Map.new
 
 hexagons = []
