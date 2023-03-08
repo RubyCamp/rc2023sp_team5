@@ -2,7 +2,7 @@ module Directors
     class Title
         def initialize(next_director)
          @next_director = next_director
-         @bg_img = Image.load("images/start_1.jpg")
+         @bg_img = Image.load("images/start_2.jpg")
         end
     
         def play
