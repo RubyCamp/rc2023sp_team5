@@ -1,5 +1,5 @@
 class Map
-  LINE_SEP = 64
+  LINE_SEP = 80
 
   def initialize
     @data = []
@@ -21,25 +21,34 @@ class Map
     mx, my = Input.mouse_x, Input.mouse_y
     cx, cy = mx / LINE_SEP, my / LINE_SEP
     if Input.mouse_push?(M_LBUTTON)
-      set_chip(cx, cy)  
-     # judge(cx, cy)
+
+      set_chip(cx, cy)
     end
+  end
+
+  def draw(image)
+    Window.draw(0,0,image)
   end
 
   def draw
-    draw_lines
-    @data.each_with_index do |line, dy|
-      line.each_with_index do |chip, dx|
-        Window.draw(dx * LINE_SEP, dy * LINE_SEP, @chips[chip]) if chip >= 0
-      end
-    end
+    draw_font
+    #   draw_lines
+    # @data.each_with_index do |line, dy|
+    #   line.each_with_index do |chip, dx|
+    #     Window.draw(dx * LINE_SEP, dy * LINE_SEP, @chips[chip]) if chip >= 0
+    #   end
   end
-
   private
 
   def set_chip(x, y)
     @data[y][x] = @turn % 2
     @turn += 1
+  end
+
+  def draw_font
+    font = Font.new(32)
+    Window.draw_font(600,0,"player1",font)
+    Window.draw_font(600,300,"player2",font)
   end
 
   def draw_lines

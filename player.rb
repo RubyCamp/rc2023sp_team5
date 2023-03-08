@@ -1,14 +1,25 @@
-class Player
-    def initialize(name, point)
-        @font = Font.new(24)
-        @name = name
-        @point = point
+class Player < Sprite
+    @@heximage = Image.load('image/mousepoint.png')
+    def initialize(mx=0,my=0,name = "default",point = 0)
+        @mx = mx
+        @my = my
+        self.image = @@heximage
+        self.collision = [1,1]
     end
-
     def update
+        self.x = Input.mouse_x
+        self.y = Input.mouse_y
+    end
+    
+    def shot(hexagon)
+        puts "#{}"
     end
 
-    def draw
-        Window.draw_font(0, 0, @name, @font)
-    end
+    
+    # def syoutotucheck
+    #     if @player === @hexagon && Input.mouse_push?(M_LBUTTON)
+    #         Window.draw_font(500, 300, "衝突", font)
+    #     end
+    # end
+
 end
