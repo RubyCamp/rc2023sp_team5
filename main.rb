@@ -37,4 +37,5 @@ Window.loop do
   hexagons.each do |hexagon|
     hexagon.draw
   end
+  #dd
 end
