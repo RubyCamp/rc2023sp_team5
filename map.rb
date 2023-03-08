@@ -21,8 +21,7 @@ class Map
     mx, my = Input.mouse_x, Input.mouse_y
     cx, cy = mx / LINE_SEP, my / LINE_SEP
     if Input.mouse_push?(M_LBUTTON)
-      set_chip(cx, cy)
-      
+      set_chip(cx, cy)  
      # judge(cx, cy)
     end
   end
