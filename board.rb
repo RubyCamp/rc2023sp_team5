@@ -69,6 +69,7 @@ class Board
             # # 自分と相手の石を反転させる処理
             #   reverse_color
             # end
+          end
 
     if @turn_color != 0
       Window.draw(550, 185, @trn_img1)
