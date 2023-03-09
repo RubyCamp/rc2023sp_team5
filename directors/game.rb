@@ -70,12 +70,16 @@ module Directors
       #   end
       # end
 
-      # ゲーム終了
-      if @board.game_end? || Input.key_push?(K_SPACE)
-        @winning_bgm.play
-        return @next_director
-      end
-      self    
+          if @board.game_end? || Input.key_push?(K_SPACE)
+            if @first_player.point > @second_player.point
+              @next_director.winner = 1
+            else 
+              @next_director.winner = 2
+            end
+            return @next_director
+          end
+          self    
+        end
     end
-  end
 end
+
