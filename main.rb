@@ -1,5 +1,5 @@
 require 'dxruby'
-require_relative 'map'
+require_relative 'board'
 require_relative "hexagon"
 require_relative "player"
 require_relative "directors/title"
@@ -12,8 +12,9 @@ Window.height = 600
 Window.caption = "Team5 Game"
 
 
+# 画像の読み込み
 heximage = Image.load('image/Hex75x86.png')
-map = Map.new
+
 
 
 
@@ -29,9 +30,6 @@ current_director = title_director
 
 
 Window.loop do
-
-
-
   map.update
   map.draw
   current_director = current_director.play

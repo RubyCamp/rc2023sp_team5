@@ -4,13 +4,13 @@ module Directors
           @next_director = next_director
           @bg_img = Image.load("image/game_ui2.jpg")
           @heximage = Image.load('image/Hex50x58.png')
-          @map = Map.new
           @imgwidth,@imghaight = 50,58
           @font = Font.new(64)
+          first_player = Player.new(1)
+          second_player = Player.new(0)
+          # 盤面の初期化
+          @board = Board.new(first_player, second_player)
         end
-
-        
-        
     
         def play
           Window.draw(0, 0, @bg_img)
@@ -42,14 +42,12 @@ module Directors
               hexagons << hexagon
             end
           end
-          player = Player.new
-          @map.update
-          @map.draw
-          player.update
-          player.draw
+          
+          @board.update
+          @board.draw
+          
           hexagons.each do |hexagon|
             hexagon.draw
-          Sprite.check(player,hexagons)
           end
 
           if Input.key_push?(K_SPACE)
