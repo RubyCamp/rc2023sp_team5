@@ -87,6 +87,7 @@ class Board
               @doublepoint1p = false
             end
           end
+        end
       end
     end
     # ゲーム終了を監視する
@@ -255,7 +256,7 @@ class Board
     player.point += plus_point
   end
  
-   def doublepointflag(turn)
+  def doublepointflag(turn)
     if turn == 1
       @doublepoint1p = true
     else
