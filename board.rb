@@ -29,6 +29,8 @@ class Board
     @second_player = second_player
     #game終了を判定する変数
     @game_end = false
+    @doublepoint1p = false
+    @doublepoint2p = false
   end
 
   def update
@@ -61,8 +63,16 @@ class Board
           # プレイヤーの点数を加点する
           if @turn_color == 1
             @first_player.point +=1
+            if @doublepoint1p
+              plus_point(@first_player)
+              @doublepoint1p = false
+            end
           else
             @second_player.point +=1
+            if @doublepoint2p
+              plus_point(@first_player)
+              @doublepoint1p = false
+            end
           end
         end
       end
@@ -221,7 +231,7 @@ class Board
       end
     end
   end
-  
+
   # 1ターン飛ばすメソッド
   def turnskip
     @turn += 1
@@ -232,7 +242,16 @@ class Board
     plus_point = 1
     player.point += plus_point
   end
- 
+
+  def doublepointflag(turn)
+    if turn == 1
+      @doublepoint1p = true
+    else
+      @doublepoint2p = true
+    end
+  end
+      
+
   #　盤面を描画する
   def draw_lines
     LINE_SEP.step(Window.width / 2, LINE_SEP) do |dx|
