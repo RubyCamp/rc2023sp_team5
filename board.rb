@@ -42,6 +42,9 @@ class Board
     @stonecount = 0
 
     @can_play = true
+    @skip_event = 3
+    @skip_event_flag =false
+
   end
 
   def update
@@ -69,6 +72,12 @@ class Board
             set_chip(cx, cy)
             # 石を置く音を鳴らす
             @sound1.play
+            if @skip_event == @turn
+              turnskip
+            end
+            if @skip_event_flag == true && @turn > @skip_event+1
+              @skip_event_flag = false
+            end
             # 盤面初期時に作成したインスタンス変数@random_numがターン数と一致した場合
             # if @random_num == @turn 
             # # 自分と相手の石を反転させる処理
@@ -99,6 +108,9 @@ class Board
       line.each_with_index do |chip, dx|
         Window.draw(dx * LINE_SEP, dy * LINE_SEP, @chips[chip]) if chip >= 0
       end
+    end
+    if @skip_event_flag == true
+      Window.draw_font(250, 550, "追加ターン！！", @font3, {:color => C_RED})
     end
   end
 
@@ -245,6 +257,7 @@ class Board
   # 1ターン飛ばすメソッド
   def turnskip
     @turn += 1
+    @skip_event_flag =true
   end
 
   # playerのポイントを加算するメソッド
