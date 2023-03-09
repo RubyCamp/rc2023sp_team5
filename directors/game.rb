@@ -7,6 +7,8 @@ module Directors
           @map = Map.new
           @imgwidth,@imghaight = 50,58
         end
+
+        
         
     
         def play
