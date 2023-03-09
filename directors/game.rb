@@ -1,18 +1,22 @@
 module Directors
     class Game
         def initialize(next_director)
-         @next_director = next_director
-         @bg_img = Image.load("image/gamen.jpg")
-         @heximage = Image.load('image/Hex50x58.png')
-         @map = Map.new
-       end
+
+        def play
+          Window.draw(0, 0, @bg_img)
+          @next_director = next_director
+          @bg_img = Image.load("image/game_1.jpg")
+          @heximage = Image.load('image/Hex50x58.png')
+          @map = Map.new
+          @imgwidth,@imghaight = 50,58
+        end
         
     
         def play
-          Window.draw(0, 0, @bg_img)
-
           hexagons = []
           evenflag = false
+          start_x  = 100
+          start_y  = 100
           for j in 0..8 do
             if j % 2 == 0
               evenflag = true
@@ -20,23 +24,26 @@ module Directors
               evenflag = false
             end
             8.times do |i|
-              x = i *50
-              y = i *1 + j * 43
+              x = i *@imgwidth + start_x
+              y = i *1 + j * @imghaight*0.74  + start_y
               if  evenflag
-                x += 25
+                x += @imgwidth*0.5
                 if i >= 7
                   break
                 end
               end
-              hexagon = Hexagon.new(x,y,@heximage)
+              hexagon = Hexagon.new(x,y,@heximage,@imgwidth,@imghaight)
               hexagons << hexagon
             end
           end
-
+          player = Player.new
           @map.update
           @map.draw
+          player.update
+          player.draw
           hexagons.each do |hexagon|
             hexagon.draw
+          Sprite.check(player,hexagons)
           end
 
           if Input.key_push?(K_SPACE)
