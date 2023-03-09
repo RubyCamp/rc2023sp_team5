@@ -28,5 +28,10 @@ Window.loop do
   # プレイヤーの点数の表示
   Window.draw_font(400, 100, "先手の点数#{first_player.point}" , font) #先手
   Window.draw_font(400, 200, "後手の点数#{second_player.point}", font) #後手
+
+  # ゲーム終了かどうかをチェック
+  if board.game_end
+    break
+  end
   
 end
