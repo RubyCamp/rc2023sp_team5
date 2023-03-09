@@ -23,12 +23,14 @@ class Board
     ]
   # 石の入れ替えイベント用変数
     @random_num = rand(2..10)
-    p @random_num
+    # p @random_num
   # 手番のプレイヤーを表す変数
     @first_player = first_player
     @second_player = second_player
     #game終了を判定する変数
     @game_end = false
+    @sound = Sound.new("sound/Point_UP")
+    @font3 = Font.new(50)
   end
 
   def update
@@ -39,7 +41,8 @@ class Board
       directions = judge(cx, cy)
       # 置きたいコマの周囲に相手の石がない場合、ターミナルに「置けないよ」と表示する
       if directions.empty?
-        puts "置けないよ" 
+        #puts "置けないよ" 
+        Window.draw_font(100, 450, "置けないよ", @font3(:color => C_WHITE))
       # 相手の石があってもひっくり返せない場合は
       else
         reverse_pos = return_reverse_pos(directions, cx, cy)
@@ -153,7 +156,7 @@ class Board
             reverse_col += direction[1]
       
             tmp_pos << [reverse_row, reverse_col]
-            p tmp_pos
+           # p tmp_pos
             # ループの中で配列の外を参照しそうになった時、ループを外に出せる
             if reverse_col < 0 || reverse_col > 7 || reverse_row < 0 || reverse_row > 7
               break
@@ -176,6 +179,7 @@ class Board
       end
     end
     return reverse_pos
+
   end
   
   # コマを置いた時、隣接する相手のコマを反転させるメソッド
@@ -211,6 +215,9 @@ class Board
   def plus_point(player)
     plus_point = 1
     player.point += plus_point
+    @sound.play
+    p "ポイント加算だよ"
+
   end
 
   # ゲームを終了するかどうか判定する関数
