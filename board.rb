@@ -41,7 +41,7 @@ class Board
     @stonecount = 0
     mx, my = Input.mouse_x, Input.mouse_y
     cx, cy = mx / LINE_SEP, my / LINE_SEP
-    if @turn_color == 0
+    if @turn_color != 0
       Window.draw(550, 185, @trn_img1)
       Window.draw_font(550, 185, "きみのターン！", @font3, {:color => C_RED})
     else
