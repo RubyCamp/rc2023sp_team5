@@ -1,6 +1,6 @@
 # 本ファイルはRubyキャンプ2023春の講師である穂高さんが作ってくださったものです。オセロのサンプルコードです。
 class Board
-  attr_accessor :turn
+  attr_accessor :turn, :game_end
   LINE_SEP = 64
 
   # 盤面を初期化
@@ -25,10 +25,9 @@ class Board
   # 手番のプレイヤーを表す変数
     @first_player = first_player
     @second_player = second_player
-    p @first_player
-    p @second_player
+    #game終了を判定する変数
+    @game_end = false
   end
-
 
   def update
     mx, my = Input.mouse_x, Input.mouse_y
@@ -45,29 +44,18 @@ class Board
         # ひっくり返せるマスがない場合
         if reverse_pos.empty?
           puts "ひっくり返せるコマがないよ"
+        # ひっくり返せるマスがある場合
         else
           # ひっくり返す
           reverse_stones(reverse_pos)
           # 石を置く
           set_chip(cx, cy)
+          # 盤面初期時に作成したインスタンス変数@random_numがターン数と一致した場合
+          # if @random_num == @turn 
+          # # 自分と相手の石を反転させる処理
+          #   reverse_color
+          # end
 
-        # ひっくり返せるマスがある場合
-        # 自分と相手の石を反転させる処理
-          if @random_num == @turn          
-            @data.each do |row|
-              row.each_with_index do |item,i|
-                if item == 0
-                  row[i] = 1
-                  p "青をひっくり返した"
-                elsif item == 1
-                  row[i] = 0
-                  p "黄色をひっくり返した"
-                end
-              end
-              #p @data
-            end
-          end
-          
           # プレイヤーの点数を加点する
           if @turn_color == 1
             @first_player.point +=1
@@ -78,9 +66,9 @@ class Board
       end
     end
     # ゲーム終了を監視する
-    # if game_end?
-    #   puts 'ゲームを終了します'
-    # end
+    if game_end?
+      puts 'ゲームを終了します'
+    end
   end
 
   # コマを表示
@@ -126,7 +114,6 @@ class Board
         end
       end
     end
-    p directions
     return directions
   end
 
@@ -152,6 +139,7 @@ class Board
       reverse_col += direction[1]
       # 一時的な配列に格納する
       tmp_pos << [reverse_row, reverse_col]
+    
       # 見つけた方向を捜査していく
       while true
         # 盤面の外を探索しないように範囲を限定する
@@ -163,13 +151,19 @@ class Board
             reverse_col += direction[1]
       
             tmp_pos << [reverse_row, reverse_col]
-            #puts "探索中"
+            # ループの中で配列の外を参照しそうになった時、ループを外に出せる
+            if reverse_col < 0 || reverse_col > 7 || reverse_row < 0 || reverse_row > 7
+              break
+            end
+           
           # 手番と同じ色のコマに到達したらフラグをtrueにして探索終了
           elsif @data[reverse_col][reverse_row] == @turn_color
             reverse_flag = true
-            #puts "手番と同じ色のコマが見つかったので探索終了"
             # tmp_posをreverse_posに追加する
             reverse_pos += tmp_pos.slice(0..-2)
+            # ここでx,ｙの座標が着手可能な座標にあたる
+            # 例えば着手可能な座標と、そこに置くとひっくり返せる座標の配列のハッシュを返したりする？
+
             break
           # 何も置かれていないコマの場合も探索終了
           else
@@ -181,11 +175,10 @@ class Board
     return reverse_pos
   end
   
-  # コマを置いた時、隣接する相手のコマを反転させる関数
+  # コマを置いた時、隣接する相手のコマを反転させるメソッド
   def reverse_stones(reverse_pos)
     #return_reverse_posメソッドの返り値の二次元配列を受け取る
     # 間にあった相手の石を裏返す
-    p reverse_pos
     reverse_pos.each do |pos|
       @data[pos[1]][pos[0]] = @turn_color
       # プレイヤーの点数を加点する
@@ -195,23 +188,42 @@ class Board
         @second_player.point +=1
       end
     end
+  end
 
+  # コマの色をすべて逆にするイベント用のメソッド
+  def reverse_color
+    # 盤面の全てのコマを確認して1を0に、0を1にしてひっくり返す         
+    @data.each do |row|
+      row.each_with_index do |item,i|
+        if item == 0
+          row[i] = 1
+        elsif item == 1
+          row[i] = 0
+        end
+      end
+    end
+  end
+
+  # playerのポイントを加算するメソッド
+  def plus_point(player)
+    plus_point = 1
+    player.point += plus_point
   end
 
   # ゲームを終了するかどうか判定する関数
-  # def game_end?
-  #   game_end = false
-  # # すべてのマスに対し、judgeメソッドを実行し
-  #   @data.each_with_index do |data, i|
-  #     data.each_with_index do |index, j|
-  #       unless return_reverse_pos(judge(i, j), i, j).empty?
-  #         return game_end        
-  #       end
-  #     end
-  #   end
-  #   game_end = true
-  #   return game_end
-  # end
+  def game_end?
+    
+  # すべてのマスに対し、judgeメソッドを実行し
+    @data.each_with_index do |data, i|
+      data.each_with_index do |index, j|
+        unless return_reverse_pos(judge(j, i), j, i).empty?
+          return @game_end        
+        end
+      end
+    end
+    @game_end = true
+    return @game_end
+  end
  
   #　盤面を描画する
   def draw_lines
