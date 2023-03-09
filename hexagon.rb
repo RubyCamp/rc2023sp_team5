@@ -1,10 +1,10 @@
 class Hexagon < Sprite
     # attr_accessor :x, :y
-    def initialize(x,y,image)
+    def initialize(x,y,image,imgwidth,imghaight)
         self.x = x
         self.y = y
-        self.image = image 
-        self.collision=[25,29,25]
+        self.image = image
+        self.collision=[imgwidth/2,imghaight/2,imgwidth/2]
         #@font = Font.new(32)
     end
 
