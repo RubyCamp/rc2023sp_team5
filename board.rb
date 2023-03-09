@@ -27,6 +27,7 @@ class Board
     @font3 = Font.new(40)
     @trn_img1 = Image.load("image/haikei_white.png")
     @trn_img2 = Image.load("image/haikei_black.png")
+    @sound1 = Sound.new("sound/othello_02.wav")
 
   # 石の入れ替えイベント用変数
     @random_num = rand(2..10)
@@ -78,7 +79,6 @@ class Board
       Window.draw(550, 485, @trn_img2)
       Window.draw_font(550, 485, "きみのターン！", @font3, {:color => C_YELLOW})
     end
-   
       # プレイヤーの点数を加点する
           if @turn_color == 1
             @first_player.point +=1
@@ -207,7 +207,7 @@ class Board
             reverse_col += direction[1]
       
             tmp_pos << [reverse_row, reverse_col]
-            # p tmp_pos
+            
             # ループの中で配列の外を参照しそうになった時、ループを外に出せる
             if reverse_col < 0 || reverse_col > 7 || reverse_row < 0 || reverse_row > 7
               break
