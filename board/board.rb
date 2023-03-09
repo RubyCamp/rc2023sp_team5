@@ -1,11 +1,10 @@
-# 本ファイルはRubyキャンプ2023春の講師である穂高さんが作ってくださったものです。オセロのサンプルコートです。
-
+# 本ファイルはRubyキャンプ2023春の講師である穂高さんが作ってくださったものです。オセロのサンプルコードです。
 class Board
-  attr_accessor :turn
+  attr_accessor :turn, :game_end
   LINE_SEP = 64
 
   # 盤面を初期化
-  def initialize
+  def initialize(first_player, second_player)
     @data = []
     @data << [-1, -1, -1, -1, -1, -1, -1, -1]
     @data << [-1, -1, -1, -1, -1, -1, -1, -1]
@@ -20,6 +19,14 @@ class Board
       Image.new(LINE_SEP, LINE_SEP).circle_fill(LINE_SEP / 2, LINE_SEP / 2, LINE_SEP / 2, C_BLUE),
       Image.new(LINE_SEP, LINE_SEP).circle_fill(LINE_SEP / 2, LINE_SEP / 2, LINE_SEP / 2, C_YELLOW)
     ]
+  # 石の入れ替えイベント用変数
+    @random_num = rand(2..10)
+    p @random_num
+  # 手番のプレイヤーを表す変数
+    @first_player = first_player
+    @second_player = second_player
+    #game終了を判定する変数
+    @game_end = false
   end
 
   def update
@@ -33,7 +40,7 @@ class Board
         puts "置けないよ" 
       # 相手の石があってもひっくり返せない場合は
       else
-        reverse_pos = reversible?(directions, cx, cy)
+        reverse_pos = return_reverse_pos(directions, cx, cy)
         # ひっくり返せるマスがない場合
         if reverse_pos.empty?
           puts "ひっくり返せるコマがないよ"
@@ -43,6 +50,18 @@ class Board
           reverse_stones(reverse_pos)
           # 石を置く
           set_chip(cx, cy)
+          # 盤面初期時に作成したインスタンス変数@random_numがターン数と一致した場合
+          # if @random_num == @turn 
+          # # 自分と相手の石を反転させる処理
+          #   reverse_color
+          # end
+
+          # プレイヤーの点数を加点する
+          if @turn_color == 1
+            @first_player.point +=1
+          else
+            @second_player.point +=1
+          end
         end
       end
     end
@@ -99,7 +118,7 @@ class Board
   end
 
   # judgeメソッドの返り値directionsを使ってひっくり返せる座標reverse_posを返すメソッド
-  def reversible?(directions, x, y)
+  def return_reverse_pos(directions, x, y)
     # 相手のコマがある方向にむけて探索する
     # 色をひっくり返す座標を保持する配列
     reverse_pos = []
@@ -120,6 +139,7 @@ class Board
       reverse_col += direction[1]
       # 一時的な配列に格納する
       tmp_pos << [reverse_row, reverse_col]
+    
       # 見つけた方向を捜査していく
       while true
         # 盤面の外を探索しないように範囲を限定する
@@ -131,13 +151,19 @@ class Board
             reverse_col += direction[1]
       
             tmp_pos << [reverse_row, reverse_col]
-            #puts "探索中"
+            # ループの中で配列の外を参照しそうになった時、ループを外に出せる
+            if reverse_col < 0 || reverse_col > 7 || reverse_row < 0 || reverse_row > 7
+              break
+            end
+           
           # 手番と同じ色のコマに到達したらフラグをtrueにして探索終了
           elsif @data[reverse_col][reverse_row] == @turn_color
             reverse_flag = true
-            #puts "手番と同じ色のコマが見つかったので探索終了"
             # tmp_posをreverse_posに追加する
-            reverse_pos += tmp_pos
+            reverse_pos += tmp_pos.slice(0..-2)
+            # ここでx,ｙの座標が着手可能な座標にあたる
+            # 例えば着手可能な座標と、そこに置くとひっくり返せる座標の配列のハッシュを返したりする？
+
             break
           # 何も置かれていないコマの場合も探索終了
           else
@@ -149,28 +175,54 @@ class Board
     return reverse_pos
   end
   
-  # コマを置いた時、隣接する相手のコマを反転させる関数
+  # コマを置いた時、隣接する相手のコマを反転させるメソッド
   def reverse_stones(reverse_pos)
-    # reversible?メソッドの返り値の二次元配列を受け取る
+    #return_reverse_posメソッドの返り値の二次元配列を受け取る
     # 間にあった相手の石を裏返す
     reverse_pos.each do |pos|
       @data[pos[1]][pos[0]] = @turn_color
+      # プレイヤーの点数を加点する
+      if @turn_color == 1
+        @first_player.point +=1
+      else
+        @second_player.point +=1
+      end
     end
+  end
+
+  # コマの色をすべて逆にするイベント用のメソッド
+  def reverse_color
+    # 盤面の全てのコマを確認して1を0に、0を1にしてひっくり返す         
+    @data.each do |row|
+      row.each_with_index do |item,i|
+        if item == 0
+          row[i] = 1
+        elsif item == 1
+          row[i] = 0
+        end
+      end
+    end
+  end
+
+  # playerのポイントを加算するメソッド
+  def plus_point(player)
+    plus_point = 1
+    player.point += plus_point
   end
 
   # ゲームを終了するかどうか判定する関数
   def game_end?
-    game_end = false
+    
   # すべてのマスに対し、judgeメソッドを実行し
     @data.each_with_index do |data, i|
       data.each_with_index do |index, j|
-        unless reversible?(judge(i, j), i, j).empty?
-          return game_end        
+        unless return_reverse_pos(judge(j, i), j, i).empty?
+          return @game_end        
         end
       end
     end
-    game_end = true
-    return game_end
+    @game_end = true
+    return @game_end
   end
  
   #　盤面を描画する

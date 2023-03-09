@@ -52,13 +52,11 @@ p hexagons
 Window.loop do
   map.update
   map.draw
-  player.update
-  player.draw 
-  current_director = current_director.play
   Sprite.check(player,hexagons)
   hexagons.each do |hexagon|
     hexagon.draw
   end
+  current_director = current_director.play
   player.update
   player.draw
 end

@@ -2,14 +2,14 @@ module Directors
     class Game
         def initialize(next_director)
          @next_director = next_director
-         @bg_img = Image.load("image/game_1.jpg")
+         @bg_img = Image.load("image/gamen.jpg")
          @heximage = Image.load('image/Hex50x58.png')
          @map = Map.new
        end
         
     
         def play
-#          Window.draw(0, 0, @bg_img)
+          Window.draw(0, 0, @bg_img)
 
           hexagons = []
           evenflag = false
