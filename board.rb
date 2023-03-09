@@ -242,7 +242,7 @@ class Board
     plus_point = 1
     player.point += plus_point
   end
-
+  # ポイント二倍フラグをオンにするメソッド
   def doublepointflag(turn)
     if turn == 1
       @doublepoint1p = true
