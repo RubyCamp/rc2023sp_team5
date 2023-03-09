@@ -31,13 +31,12 @@ class Board
     @game_end = false
     @doublepoint1p = false
     @doublepoint2p = false
-    @stonecount = 0
   end
 
   def update
+    @stonecount = 0
     mx, my = Input.mouse_x, Input.mouse_y
     cx, cy = mx / LINE_SEP, my / LINE_SEP
-    stonecount = 0
     if Input.mouse_push?(M_LBUTTON)
       # コマを置ける場合、描画する
       directions = judge(cx, cy)
@@ -56,8 +55,6 @@ class Board
           reverse_stones(reverse_pos)
           # 石を置く
           set_chip(cx, cy)
-          @stonecount += 1 
-          puts @stonecount
           # 盤面初期時に作成したインスタンス変数@random_numがターン数と一致した場合
           # if @random_num == @turn 
           # # 自分と相手の石を反転させる処理
@@ -67,23 +64,25 @@ class Board
           # プレイヤーの点数を加点する
           if @turn_color == 1
             @first_player.point +=1
+            puts "#{@stonecount}------------------------------------------------------"
             if @doublepoint1p
               plus_point(@first_player)
               @doublepoint1p = false
             end
-            if stonecount >= 3
+            if @stonecount >= 3
               plus_point(@first_player)
-              stonecount = 0
+              @stonecount = 0
             end
           else
             @second_player.point +=1
+            puts "#{@stonecount}------------------------------------------------------"
             if @doublepoint2p
               plus_point(@second_player)
               @doublepoint1p = false
             end
-            if stonecount >= 3
+            if @stonecount >= 3
               plus_point(@second_player)
-              stonecount = 0
+              @stonecount = 0
             end
           end
         end
@@ -227,6 +226,7 @@ class Board
       else
         @second_player.point +=1
       end
+      @stonecount += 1
     end
   end
 
