@@ -25,19 +25,26 @@ class Board
     @trn_img1 = Image.load("image/haikei_white.png")
     @trn_img2 = Image.load("image/haikei_black.png")
     @sound1 = Sound.new("sound/othello_02.wav")
+    @sound2 = Sound.new("sound/Point_UP.wav")
+    
 
-  # 石の入れ替えイベント用変数
-    @random_num = rand(2..10)
+    # 石の入れ替えイベント用変数
+    @random_num = rand(5..10)
+    @random_num_2 = 11
     # p @random_num
     
-  # 手番のプレイヤーを表す変数
+    # 手番のプレイヤーを表す変数
     @first_player = first_player
     @second_player = second_player
     #game終了を判定する変数
     @game_end = false
-  # イベント用の変数
+    # イベント用の変数
     @doublepoint1p = false
     @doublepoint2p = false
+
+    # ポイントアップイベント用の
+    # 白黒反転イベントを感知するフラグ
+    @reverse_color_flag = false
 
     # ひっくり返した石の個数を数える変数
     @stonecount = 0
@@ -62,12 +69,14 @@ class Board
         # 置きたいコマの周囲に相手の石がない場合、ターミナルに「置けないよ」と表示する
         if directions.empty?
           puts "置けないよ" 
+          @sound2.play
         # 相手の石があってもひっくり返せない場合は
         else
           reverse_pos = return_reverse_pos(directions, cx, cy)
           # ひっくり返せるマスがない場合
           if reverse_pos.empty?
             puts "ひっくり返せるコマがないよ"
+            @sound2.play
           # ひっくり返せるマスがある場合
           else
             # ひっくり返す
@@ -76,6 +85,16 @@ class Board
             set_chip(cx, cy)
             # 石を置く音を鳴らす
             @sound1.play
+
+            if @random_num_2 == @turn
+              if @turn_color == 0
+                plus_point(@first_player)
+              else
+                plus_point(@second_player)
+              end
+              @sound2.play
+            end
+            # ターン追加の処理
             if @skip_event == @turn
               turnskip
             end
@@ -83,10 +102,10 @@ class Board
               @skip_event_flag = false
             end
             # 盤面初期時に作成したインスタンス変数@random_numがターン数と一致した場合
-            # if @random_num == @turn 
-            # # 自分と相手の石を反転させる処理
-            #   reverse_color
-            # end
+            if @random_num == @turn 
+            # 自分と相手の石を反転させる処理
+              reverse_color
+            end
           end
         end
       end
@@ -115,10 +134,15 @@ class Board
       Window.draw(550, 485, @trn_img2)
       Window.draw_font(550, 485, "きみのターン！", @font3, {:color => C_YELLOW})
     end
-    
+
     # 追加ターンの際、画面に表示する
     if @skip_event_flag == true
       Window.draw_font(250, 550, "追加ターン！！", @font3, {:color => C_RED})
+    end
+
+    # 白黒が反転した後、画面に表示する
+    if @reverse_color_flag == true
+      Window.draw_font(250, 550, "白黒が反転した！！", @font3, {:color => C_RED})
     end
   end
 
@@ -260,12 +284,14 @@ class Board
         end
       end
     end
+    # フラグをtrueにする
+    @reverse_color_flag = true
   end
   
   # 1ターン飛ばすメソッド
   def turnskip
     @turn += 1
-    @skip_event_flag =true
+    @skip_event_flag = true
   end
 
   # playerのポイントを加算するメソッド
@@ -312,6 +338,7 @@ class Board
   
   #　盤面を描画する
   def draw_lines
+    # 8本横線を引く
     count = 0
     LINE_SEP.step(Window.width, LINE_SEP) do |dx|
       break if count > 7
@@ -319,7 +346,6 @@ class Board
       count += 1
     end
   
-
     count = 0
     LINE_SEP.step(Window.height, LINE_SEP) do |dy|
       break if count > 7
