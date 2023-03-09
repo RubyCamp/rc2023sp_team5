@@ -24,6 +24,7 @@ class Board
     @font3 = Font.new(40)
     @trn_img1 = Image.load("image/haikei_white.png")
     @trn_img2 = Image.load("image/haikei_black.png")
+    @sound1 = Sound.new("sound/othello_02.wav")
 
   # 石の入れ替えイベント用変数
     @random_num = rand(2..10)
@@ -66,6 +67,7 @@ class Board
           reverse_stones(reverse_pos)
           # 石を置く
           set_chip(cx, cy)
+          @sound1.play
           # 盤面初期時に作成したインスタンス変数@random_numがターン数と一致した場合
           # if @random_num == @turn 
           # # 自分と相手の石を反転させる処理
@@ -200,7 +202,7 @@ class Board
             reverse_col += direction[1]
       
             tmp_pos << [reverse_row, reverse_col]
-            p tmp_pos
+            #p tmp_pos
             # ループの中で配列の外を参照しそうになった時、ループを外に出せる
             if reverse_col < 0 || reverse_col > 7 || reverse_row < 0 || reverse_row > 7
               break
