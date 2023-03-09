@@ -107,7 +107,7 @@ class Board
 
   # コマを表示
   def draw
-    draw_lines
+    # draw_lines
     @data.each_with_index do |line, dy|
       line.each_with_index do |chip, dx|
         Window.draw(dx * LINE_SEP, dy * LINE_SEP, @chips[chip]) if chip >= 0
@@ -200,7 +200,7 @@ class Board
             reverse_col += direction[1]
       
             tmp_pos << [reverse_row, reverse_col]
-            p tmp_pos
+            # p tmp_pos
             # ループの中で配列の外を参照しそうになった時、ループを外に出せる
             if reverse_col < 0 || reverse_col > 7 || reverse_row < 0 || reverse_row > 7
               break

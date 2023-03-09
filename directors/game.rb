@@ -9,6 +9,7 @@ module Directors
           @font1 = Font.new(64)
           @font2 = Font.new(50)
           
+          @playerpointer = Player.new(0)
 
           @first_player = Player.new(1)
           @second_player = Player.new(0)
@@ -60,7 +61,7 @@ module Directors
           hexagons.each do |hexagon|
             hexagon.draw
           end
-
+          Sprite.check(@playerpointer,hexagons)
           if @board.game_end? || Input.key_push?(K_SPACE)
             return @next_director
           end
