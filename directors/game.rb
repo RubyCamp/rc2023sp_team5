@@ -1,11 +1,8 @@
 module Directors
     class Game
         def initialize(next_director)
-
-        def play
-          Window.draw(0, 0, @bg_img)
           @next_director = next_director
-          @bg_img = Image.load("image/game_1.jpg")
+          @bg_img = Image.load("image/game_ui2.jpg")
           @heximage = Image.load('image/Hex50x58.png')
           @map = Map.new
           @imgwidth,@imghaight = 50,58
@@ -13,6 +10,7 @@ module Directors
         
     
         def play
+          Window.draw(0, 0, @bg_img)
           hexagons = []
           evenflag = false
           start_x  = 100
