@@ -2,11 +2,8 @@
 # 盤面の表示とコマを置くメソッド以外は下山が実装しました。
 
 class Board
-  attr_accessor :turn, :game_end
-
+  attr_accessor :turn, :game_end, :can_play
   LINE_SEP = 64
-
-
   # 盤面を初期化
   def initialize(first_player, second_player)
     @data = []
@@ -40,14 +37,20 @@ class Board
     @game_end = false
     @doublepoint1p = false
     @doublepoint2p = false
+
+    # ひっくり返した石の個数を数える変数
+    @stonecount = 0
+
+    @can_play = true
     @skip_event = 3
     @skip_event_flag =false
+
   end
 
   def update
-    @stonecount = 0
     mx, my = Input.mouse_x, Input.mouse_y
     cx, cy = mx / LINE_SEP, my / LINE_SEP
+    # 盤面の中をクリックした場合
     if cx <  8 && cy < 8
       if Input.mouse_push?(M_LBUTTON)
         # コマを置ける場合、描画する
@@ -67,6 +70,8 @@ class Board
             reverse_stones(reverse_pos)
             # 石を置く
             set_chip(cx, cy)
+            # 石を置く音を鳴らす
+            @sound1.play
             if @skip_event == @turn
               turnskip
             end
@@ -80,45 +85,22 @@ class Board
             # end
           end
         end
-    if @turn_color != 0
-      Window.draw(550, 185, @trn_img1)
-      Window.draw_font(550, 185, "きみのターン！", @font3, {:color => C_RED})
-    else
-      Window.draw(550, 485, @trn_img2)
-      Window.draw_font(550, 485, "きみのターン！", @font3, {:color => C_YELLOW})
-    end
-      # プレイヤーの点数を加点する
-      if @turn_color == 1
-        @first_player.point +=1
-        #　ポイント2倍フラグがオンの時追加で1点
-        if @doublepoint1p
-          plus_point(@first_player)
-          @doublepoint1p = false
-        end
-        #　3個以上ひっくり返したときに追加で1点
-        if @stonecount >= 3
-          plus_point(@first_player)
-          @stonecount = 0
-        end
-      else
-        @second_player.point +=1
-        if @doublepoint2p
-          plus_point(@second_player)
-          @doublepoint1p = false
-        end
-        if @stonecount >= 3
-          plus_point(@second_player)
-          @stonecount = 0
+        if @turn_color != 0
+          Window.draw(550, 185, @trn_img1)
+          Window.draw_font(550, 185, "きみのターン！", @font3, {:color => C_RED})
+        else
+          Window.draw(550, 485, @trn_img2)
+          Window.draw_font(550, 485, "きみのターン！", @font3, {:color => C_YELLOW})
         end
       end
-      end
-    end
+    end # コマを裏返す処理終了
+  
     # ゲーム終了を監視する
     if game_end?
       puts 'ゲームを終了します'
     end
-  end
-
+  end # update関数終了
+  
   # コマを表示
   def draw
     draw_lines
@@ -145,8 +127,7 @@ class Board
       # すべてのマスを探索し裏返せるコマがない場合trueを返す
       @game_end = true
       return @game_end
-    end
-
+  end
 
   private
 
@@ -254,6 +235,7 @@ class Board
       else
         @second_player.point +=1
       end
+      # ひっくり返した石の個数を数える変数
       @stonecount += 1
     end
   end
@@ -293,6 +275,33 @@ class Board
     end
   end
 
+  # ポイント関係のイベントメソッド
+  def point_event
+    if @turn_color == 1
+      @first_player.point +=1
+      #　ポイント2倍フラグがオンの時追加で1点
+      if @doublepoint1p
+        plus_point(@first_player)
+        @doublepoint1p = false
+      end
+      #　3個以上ひっくり返したときに追加で1点
+      if @stonecount >= 3
+        plus_point(@first_player)
+        @stonecount = 0
+      end
+    else
+      @second_player.point +=1
+      if @doublepoint2p
+        plus_point(@second_player)
+        @doublepoint1p = false
+      end
+      if @stonecount >= 3
+        plus_point(@second_player)
+        @stonecount = 0
+      end
+    end
+  end
+  
   #　盤面を描画する
   def draw_lines
     count = 0
@@ -301,6 +310,7 @@ class Board
       Window.draw_line(dx, 0, dx, Window.height - 90, C_WHITE)
       count += 1
     end
+  
 
     count = 0
     LINE_SEP.step(Window.height, LINE_SEP) do |dy|

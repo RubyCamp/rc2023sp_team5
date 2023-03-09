@@ -1,12 +1,15 @@
 module Directors
 
+
   class Game
     def initialize(next_director)
       @next_director = next_director
       @bg_img = Image.load("image/game_ui2.jpg")
       @heximage = Image.load('image/Hex50x58.png')
       @imgwidth, @imgheight = 50, 58
-      @font = Font.new(64)
+      @font1 = Font.new(64)
+      @font2 = Font.new(50)
+      @font3 = Font.new(40)
       @first_player = Player.new(1)
       @second_player = Player.new(0)
       # 盤面の初期化
@@ -47,10 +50,16 @@ module Directors
     def play
       Window.draw(0, 0, @bg_img)
 
-      Window.draw_font(660, 10, "先手", @font, {:color => C_GREEN})
-      Window.draw_font(660, 310, "後手", @font, {:color => C_GREEN})
-      Window.draw_font(550, 190, "先手:#{@first_player.point}pt", @font, {:color => C_GREEN})
-      Window.draw_font(550, 490, "後手:#{@second_player.point}pt", @font, {:color => C_GREEN})
+      if @board.can_play == false
+        # puts "置けないよ" 
+        Window.draw_font(100, 400, "置けないよ", @font3, {:color => C_WHITE})
+      end
+
+
+      Window.draw_font(660, 10, "先手", @font1, {:color => C_GREEN})
+      Window.draw_font(660, 310, "後手", @font2, {:color => C_GREEN})
+      Window.draw_font(550, 190, "先手:#{@first_player.point}pt", @font1, {:color => C_GREEN})
+      Window.draw_font(550, 490, "後手:#{@second_player.point}pt", @font2, {:color => C_GREEN})
 
       @board.update
       @board.draw
