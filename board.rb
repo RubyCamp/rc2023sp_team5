@@ -33,6 +33,8 @@ class Board
     @second_player = second_player
     #game終了を判定する変数
     @game_end = false
+    @doublepoint1p = false
+    @doublepoint2p = false
   end
 
   def update
