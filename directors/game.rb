@@ -5,7 +5,7 @@ module Directors
           @bg_img = Image.load("image/game_ui2.jpg")
           @heximage = Image.load('image/Hex50x58.png')
           @imgwidth,@imghaight = 50,58
-          # プレイヤーの初期化
+          @font = Font.new(64)
           first_player = Player.new(1)
           second_player = Player.new(0)
           # 盤面の初期化
@@ -14,6 +14,11 @@ module Directors
     
         def play
           Window.draw(0, 0, @bg_img)
+
+          Window.draw_font(660, 10, "先手", @font, {:color => C_GREEN})
+          Window.draw_font(660, 310, "後手", @font, {:color => C_GREEN})
+          Window.draw_font(615, 190, "先pt", @font, {:color => C_GREEN})
+          Window.draw_font(615, 490, "後pt", @font, {:color => C_GREEN})
           hexagons = []
           evenflag = false
           start_x  = 75
