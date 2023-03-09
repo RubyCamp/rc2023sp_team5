@@ -6,10 +6,10 @@ module Directors
           @heximage = Image.load('image/Hex50x58.png')
           @imgwidth,@imghaight = 50,58
           # プレイヤーの初期化
-          first_player = Player.new(1)
-          second_player = Player.new(0)
+          @first_player = Player.new(1)
+          @second_player = Player.new(0)
           # 盤面の初期化
-          @board = Board.new(first_player, second_player)
+          @board = Board.new(@first_player, @second_player)
         end
     
         def play
@@ -45,7 +45,8 @@ module Directors
             hexagon.draw
           end
 
-          if Input.key_push?(K_SPACE)
+          # ゲームの終了判定
+          if @board.game_end?
             return @next_director
           end
           self    

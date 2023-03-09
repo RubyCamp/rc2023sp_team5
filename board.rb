@@ -83,7 +83,22 @@ class Board
     end
   end
 
+   # ゲームを終了するかどうか判定する関数
+   def game_end?
+    # すべてのマスに対し、return_reverse_posメソッドを実行し返り値の配列が空でなければfalseを返す
+      @data.each_with_index do |data, i|
+        data.each_with_index do |index, j|
+          unless return_reverse_pos(judge(j, i), j, i).empty?
+            return @game_end        
+          end
+        end
+      end
+      # すべてのマスを探索し裏返せるコマがない場合trueを返す
+      @game_end = true
+      return @game_end
+    end
 
+    
   private
 
   # コマを置く処理
@@ -154,7 +169,7 @@ class Board
       
             tmp_pos << [reverse_row, reverse_col]
             p tmp_pos
-            # ループの中で配列の外を参照しそうになった時、ループを外に出せる
+            # ループの中で配列の外を参照しそうになった時、ループを終了させる
             if reverse_col < 0 || reverse_col > 7 || reverse_row < 0 || reverse_row > 7
               break
             end
@@ -211,21 +226,6 @@ class Board
   def plus_point(player)
     plus_point = 1
     player.point += plus_point
-  end
-
-  # ゲームを終了するかどうか判定する関数
-  def game_end?
-  # すべてのマスに対し、return_reverse_posメソッドを実行し返り値の配列が空でなければfalseを返す
-    @data.each_with_index do |data, i|
-      data.each_with_index do |index, j|
-        unless return_reverse_pos(judge(j, i), j, i).empty?
-          return @game_end        
-        end
-      end
-    end
-    # すべてのマスを探索し裏返せるコマがない場合trueを返す
-    @game_end = true
-    return @game_end
   end
  
   #　盤面を描画する

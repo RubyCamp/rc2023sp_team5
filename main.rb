@@ -23,6 +23,5 @@ current_director = title_director
 
 
 Window.loop do
-  
   current_director = current_director.play
 end
