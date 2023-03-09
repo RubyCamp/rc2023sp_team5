@@ -2,7 +2,7 @@
 # 盤面の表示とコマを置くメソッド以外は下山が実装しました。
 
 class Board
-  attr_accessor :turn, :game_end
+  attr_accessor :turn, :game_end, :can_play
   LINE_SEP = 40
 
   # 盤面を初期化
@@ -36,6 +36,8 @@ class Board
     @game_end = false
     @doublepoint1p = false
     @doublepoint2p = false
+
+    @can_play = true
   end
 
   def update
@@ -52,9 +54,16 @@ class Board
     if Input.mouse_push?(M_LBUTTON)
       # コマを置ける場合、描画する
       directions = judge(cx, cy)
-      # 置きたいコマの周囲に相手の石がない場合、ターミナルに「置けないよ」と表示する
       if directions.empty?
-        puts "置けないよ" 
+        @can_play = false
+      else
+        @can_play = true
+      end
+      # 置きたいコマの周囲に相手の石がない場合、ターミナルに「置けないよ」と表示する
+      if @can_play == false
+      
+       # puts "置けないよ" 
+        #Window.draw_font(100, 400, "置けないよ", @font3, {:color => C_WHITE})
       # 相手の石があってもひっくり返せない場合は
       else
         reverse_pos = return_reverse_pos(directions, cx, cy)

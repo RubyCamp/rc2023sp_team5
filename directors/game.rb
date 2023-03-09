@@ -8,6 +8,7 @@ module Directors
 
           @font1 = Font.new(64)
           @font2 = Font.new(50)
+          @font3 = Font.new(40)
           
 
           @first_player = Player.new(1)
@@ -19,8 +20,11 @@ module Directors
         def play
           Window.draw(0, 0, @bg_img)
 
-           
-         
+          if @board.can_play == false
+      
+            # puts "置けないよ" 
+             Window.draw_font(100, 400, "置けないよ", @font3, {:color => C_WHITE})
+          end
 
 
           Window.draw_font(660, 10, "先手", @font1, {:color => C_GREEN})
