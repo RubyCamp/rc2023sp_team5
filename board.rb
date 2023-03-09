@@ -255,6 +255,14 @@ class Board
     player.point += plus_point
   end
  
+   def doublepointflag(turn)
+    if turn == 1
+      @doublepoint1p = true
+    else
+      @doublepoint2p = true
+    end
+  end
+ 
   #　盤面を描画する
   def draw_lines
     LINE_SEP.step(Window.width / 2, LINE_SEP) do |dx|
