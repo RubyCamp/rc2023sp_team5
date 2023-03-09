@@ -221,6 +221,11 @@ class Board
       end
     end
   end
+  
+  # 1ターン飛ばすメソッド
+  def turnskip
+    @turn += 1
+  end
 
   # playerのポイントを加算するメソッド
   def plus_point(player)
