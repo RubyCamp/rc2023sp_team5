@@ -83,6 +83,21 @@ class Board
     end
   end
 
+  # ゲームを終了するかどうか判定する関数
+  def game_end?
+    # すべてのマスに対し、return_reverse_posメソッドを実行し返り値の配列が空でなければfalseを返す
+      @data.each_with_index do |data, i|
+        data.each_with_index do |index, j|
+          unless return_reverse_pos(judge(j, i), j, i).empty?
+            return @game_end        
+          end
+        end
+      end
+      # すべてのマスを探索し裏返せるコマがない場合trueを返す
+      @game_end = true
+      return @game_end
+    end
+
 
   private
 
@@ -211,21 +226,6 @@ class Board
   def plus_point(player)
     plus_point = 1
     player.point += plus_point
-  end
-
-  # ゲームを終了するかどうか判定する関数
-  def game_end?
-  # すべてのマスに対し、return_reverse_posメソッドを実行し返り値の配列が空でなければfalseを返す
-    @data.each_with_index do |data, i|
-      data.each_with_index do |index, j|
-        unless return_reverse_pos(judge(j, i), j, i).empty?
-          return @game_end        
-        end
-      end
-    end
-    # すべてのマスを探索し裏返せるコマがない場合trueを返す
-    @game_end = true
-    return @game_end
   end
  
   #　盤面を描画する
