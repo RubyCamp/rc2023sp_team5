@@ -6,6 +6,7 @@ module Directors
           @heximage = Image.load('image/Hex50x58.png')
           @map = Map.new
           @imgwidth,@imghaight = 50,58
+          @font = Font.new(64)
         end
 
         
@@ -13,6 +14,11 @@ module Directors
     
         def play
           Window.draw(0, 0, @bg_img)
+
+          Window.draw_font(660, 10, "先手", @font, {:color => C_GREEN})
+          Window.draw_font(660, 310, "後手", @font, {:color => C_GREEN})
+          Window.draw_font(615, 190, "先pt", @font, {:color => C_GREEN})
+          Window.draw_font(615, 490, "後pt", @font, {:color => C_GREEN})
           hexagons = []
           evenflag = false
           start_x  = 75
