@@ -40,6 +40,8 @@ class Board
     @game_end = false
     @doublepoint1p = false
     @doublepoint2p = false
+    @skip_event = 3
+    @skip_event_flag =false
   end
 
   def update
@@ -65,13 +67,19 @@ class Board
             reverse_stones(reverse_pos)
             # 石を置く
             set_chip(cx, cy)
+            if @skip_event == @turn
+              turnskip
+            end
+            if @skip_event_flag == true && @turn > @skip_event+1
+              @skip_event_flag = false
+            end
             # 盤面初期時に作成したインスタンス変数@random_numがターン数と一致した場合
             # if @random_num == @turn 
             # # 自分と相手の石を反転させる処理
             #   reverse_color
             # end
           end
-
+        end
     if @turn_color != 0
       Window.draw(550, 185, @trn_img1)
       Window.draw_font(550, 185, "きみのターン！", @font3, {:color => C_RED})
@@ -80,30 +88,29 @@ class Board
       Window.draw_font(550, 485, "きみのターン！", @font3, {:color => C_YELLOW})
     end
       # プレイヤーの点数を加点する
-          if @turn_color == 1
-            @first_player.point +=1
-            #　ポイント2倍フラグがオンの時追加で1点
-            if @doublepoint1p
-              plus_point(@first_player)
-              @doublepoint1p = false
-            end
-            #　3個以上ひっくり返したときに追加で1点
-            if @stonecount >= 3
-              plus_point(@first_player)
-              @stonecount = 0
-            end
-          else
-            @second_player.point +=1
-            if @doublepoint2p
-              plus_point(@second_player)
-              @doublepoint1p = false
-            end
-            if @stonecount >= 3
-              plus_point(@second_player)
-              @stonecount = 0
-            end
-          end
+      if @turn_color == 1
+        @first_player.point +=1
+        #　ポイント2倍フラグがオンの時追加で1点
+        if @doublepoint1p
+          plus_point(@first_player)
+          @doublepoint1p = false
         end
+        #　3個以上ひっくり返したときに追加で1点
+        if @stonecount >= 3
+          plus_point(@first_player)
+          @stonecount = 0
+        end
+      else
+        @second_player.point +=1
+        if @doublepoint2p
+          plus_point(@second_player)
+          @doublepoint1p = false
+        end
+        if @stonecount >= 3
+          plus_point(@second_player)
+          @stonecount = 0
+        end
+      end
       end
     end
     # ゲーム終了を監視する
@@ -119,6 +126,9 @@ class Board
       line.each_with_index do |chip, dx|
         Window.draw(dx * LINE_SEP, dy * LINE_SEP, @chips[chip]) if chip >= 0
       end
+    end
+    if @skip_event_flag == true
+      Window.draw_font(250, 550, "追加ターン！！", @font3, {:color => C_RED})
     end
   end
 
@@ -265,6 +275,7 @@ class Board
   # 1ターン飛ばすメソッド
   def turnskip
     @turn += 1
+    @skip_event_flag =true
   end
 
   # playerのポイントを加算するメソッド
@@ -281,7 +292,7 @@ class Board
       @doublepoint2p = true
     end
   end
- 
+
   #　盤面を描画する
   def draw_lines
     count = 0
