@@ -21,6 +21,10 @@ class Board
       Image.new(LINE_SEP, LINE_SEP).circle_fill(LINE_SEP / 2, LINE_SEP / 2, LINE_SEP / 2, C_WHITE),
       Image.new(LINE_SEP, LINE_SEP).circle_fill(LINE_SEP / 2, LINE_SEP / 2, LINE_SEP / 2, C_BLACK)
     ]
+    @font3 = Font.new(40)
+    @trn_img1 = Image.load("image/haikei_white.png")
+    @trn_img2 = Image.load("image/haikei_black.png")
+
   # 石の入れ替えイベント用変数
     @random_num = rand(2..10)
     # p @random_num
@@ -37,6 +41,16 @@ class Board
     @stonecount = 0
     mx, my = Input.mouse_x, Input.mouse_y
     cx, cy = mx / LINE_SEP, my / LINE_SEP
+<<<<<<< HEAD
+=======
+    if @turn_color == 0
+      Window.draw(550, 185, @trn_img1)
+      Window.draw_font(550, 185, "きみのターン！", @font3, {:color => C_RED})
+    else
+      Window.draw(550, 485, @trn_img2)
+      Window.draw_font(550, 485, "きみのターン！", @font3, {:color => C_YELLOW})
+    end
+>>>>>>> 2f93baa229d294e4962ecd64dabab44bc9fc17a3
     if Input.mouse_push?(M_LBUTTON)
       # コマを置ける場合、描画する
       directions = judge(cx, cy)
@@ -61,21 +75,21 @@ class Board
           #   reverse_color
           # end
 
-          # プレイヤーの点数を加点する
+      # プレイヤーの点数を加点する
           if @turn_color == 1
             @first_player.point +=1
-            puts "#{@stonecount}------------------------------------------------------"
+            #　ポイント2倍フラグがオンの時追加で1点
             if @doublepoint1p
               plus_point(@first_player)
               @doublepoint1p = false
             end
+            #　3個以上ひっくり返したときに追加で1点
             if @stonecount >= 3
               plus_point(@first_player)
               @stonecount = 0
             end
           else
             @second_player.point +=1
-            puts "#{@stonecount}------------------------------------------------------"
             if @doublepoint2p
               plus_point(@second_player)
               @doublepoint1p = false
@@ -243,7 +257,7 @@ class Board
       end
     end
   end
-
+  
   # 1ターン飛ばすメソッド
   def turnskip
     @turn += 1
@@ -254,6 +268,7 @@ class Board
     plus_point = 1
     player.point += plus_point
   end
+
   # ポイント二倍フラグをオンにするメソッド
   def doublepointflag(turn)
     if turn == 1
@@ -262,8 +277,7 @@ class Board
       @doublepoint2p = true
     end
   end
-      
-
+ 
   #　盤面を描画する
   def draw_lines
     LINE_SEP.step(Window.width / 2, LINE_SEP) do |dx|
