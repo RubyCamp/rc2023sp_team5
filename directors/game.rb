@@ -9,7 +9,7 @@ module Directors
           @font1 = Font.new(64)
           @font2 = Font.new(50)
           
-          @playerpointer = Player.new(0)
+          @playerpointer = Player.new(100)
 
           @first_player = Player.new(1)
           @second_player = Player.new(0)
@@ -18,10 +18,10 @@ module Directors
         end
     
         def play
-          Window.draw(0, 0, @bg_img)
+          # Window.draw(0, 0, @bg_img)
 
-           
-         
+        
+        
 
 
           Window.draw_font(660, 10, "先手", @font1, {:color => C_GREEN})
@@ -57,15 +57,15 @@ module Directors
           
           @board.update
           @board.draw
-          
           hexagons.each do |hexagon|
             hexagon.draw
           end
           Sprite.check(@playerpointer,hexagons)
+          
           if @board.game_end? || Input.key_push?(K_SPACE)
             return @next_director
           end
-          self    
+          self
         end
     end
 end

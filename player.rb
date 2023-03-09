@@ -1,7 +1,7 @@
 class Player < Sprite
     attr_accessor :point
     # 画像の読み込み
-    @@heximage = Image.load('image/mousepoint.png')
+    @@heximage = Image.load('image/Hex50x58.png')
 
     # 初期化
     def initialize(turn, mx=0,my=0,name="default")
@@ -19,7 +19,7 @@ class Player < Sprite
     end
     
     def shot(hexagon)
-        # puts "#{}"
+        puts "衝突"
     end
 
     

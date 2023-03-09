@@ -3,6 +3,7 @@ class Hexagon < Sprite
     def initialize(x,y,image,imgwidth,imghaight)
         self.x = x
         self.y = y
+        @checkfont = Font.new(60) 
 
         self.image = image
         self.collision=[imgwidth/2,imghaight/2,imgwidth/2]
@@ -10,7 +11,8 @@ class Hexagon < Sprite
     end
 
     def hit(player)
-        #Window.draw_font(x, y, "衝突", @font)
+        puts "あたってる"
+        Window.draw_font(x, y, "衝突", @checkfont)
     end
 
         # def draw
