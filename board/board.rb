@@ -204,6 +204,11 @@ class Board
     end
   end
 
+  # 1ターン飛ばすメソッド
+  def turnskip
+    @turn += 1
+  end
+
   # playerのポイントを加算するメソッド
   def plus_point(player)
     plus_point = 1
@@ -217,7 +222,7 @@ class Board
     @data.each_with_index do |data, i|
       data.each_with_index do |index, j|
         unless return_reverse_pos(judge(j, i), j, i).empty?
-          return @game_end        
+          return @game_end 
         end
       end
     end

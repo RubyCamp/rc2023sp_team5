@@ -46,7 +46,7 @@ class Map
   end
 
   def draw_font
-   # font = Font.new(32)
+    # font = Font.new(32)
     #Window.draw_font(600,0,"player1",font)
     #Window.draw_font(600,300,"player2",font)
   end
