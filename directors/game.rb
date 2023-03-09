@@ -63,6 +63,7 @@ module Directors
 
       # ゲーム終了
       if @board.game_end? || Input.key_push?(K_SPACE)
+        # 勝利時の音楽をならす
         @winning_bgm.play
         return @next_director
       end
