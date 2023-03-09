@@ -13,7 +13,7 @@ module Directors
           Window.draw(0, 0, @bg_img)
           hexagons = []
           evenflag = false
-          start_x  = 100
+          start_x  = 75
           start_y  = 100
           for j in 0..8 do
             if j % 2 == 0
