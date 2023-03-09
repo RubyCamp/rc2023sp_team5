@@ -41,8 +41,6 @@ class Board
     @stonecount = 0
     mx, my = Input.mouse_x, Input.mouse_y
     cx, cy = mx / LINE_SEP, my / LINE_SEP
-<<<<<<< HEAD
-=======
     if @turn_color == 0
       Window.draw(550, 185, @trn_img1)
       Window.draw_font(550, 185, "きみのターン！", @font3, {:color => C_RED})
@@ -50,7 +48,6 @@ class Board
       Window.draw(550, 485, @trn_img2)
       Window.draw_font(550, 485, "きみのターン！", @font3, {:color => C_YELLOW})
     end
->>>>>>> 2f93baa229d294e4962ecd64dabab44bc9fc17a3
     if Input.mouse_push?(M_LBUTTON)
       # コマを置ける場合、描画する
       directions = judge(cx, cy)
