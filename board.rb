@@ -158,7 +158,7 @@ class Board
             if reverse_col < 0 || reverse_col > 7 || reverse_row < 0 || reverse_row > 7
               break
             end
-          
+           
           # 手番と同じ色のコマに到達したらフラグをtrueにして探索終了
           elsif @data[reverse_col][reverse_row] == @turn_color
             reverse_flag = true
@@ -207,11 +207,6 @@ class Board
     end
   end
 
-  # 1ターン飛ばすメソッド
-  def turnskip
-    @turn += 1
-  end
-
   # playerのポイントを加算するメソッド
   def plus_point(player)
     plus_point = 1
@@ -224,7 +219,7 @@ class Board
     @data.each_with_index do |data, i|
       data.each_with_index do |index, j|
         unless return_reverse_pos(judge(j, i), j, i).empty?
-          return @game_end 
+          return @game_end        
         end
       end
     end
