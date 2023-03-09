@@ -25,7 +25,7 @@ class Board
     @trn_img1 = Image.load("image/haikei_white.png")
     @trn_img2 = Image.load("image/haikei_black.png")
     @sound1 = Sound.new("sound/othello_02.wav")
-    @sound2 = Sound.new("sound/Point_UP.wav")
+    @sound2 = Sound.new("sound/batsu.wav")
     
 
     # 石の入れ替えイベント用変数
@@ -92,7 +92,7 @@ class Board
               else
                 plus_point(@second_player)
               end
-              @sound2.play
+              @point_up_sound.play
             end
             # ターン追加の処理
             if @skip_event == @turn
