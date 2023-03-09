@@ -2,8 +2,15 @@
 # 盤面の表示とコマを置くメソッド以外は下山が実装しました。
 
 class Board
+<<<<<<< HEAD
   attr_accessor :turn, :game_end, :can_play
   LINE_SEP = 40
+=======
+  attr_accessor :turn, :game_end
+
+  LINE_SEP = 64
+
+>>>>>>> 87403ad20f085c0c9d09414f2c04ae214d848691
 
   # 盤面を初期化
   def initialize(first_player, second_player)
@@ -16,10 +23,11 @@ class Board
     @data << [-1, -1, -1, -1, -1, -1, -1, -1]
     @data << [-1, -1, -1, -1, -1, -1, -1, -1]
     @data << [-1, -1, -1, -1, -1, -1, -1, -1]
-    @turn = 1
+    @turn = 1 # ターンを表わす変数
     @chips = [
       Image.new(LINE_SEP, LINE_SEP).circle_fill(LINE_SEP / 2, LINE_SEP / 2, LINE_SEP / 2, C_WHITE),
       Image.new(LINE_SEP, LINE_SEP).circle_fill(LINE_SEP / 2, LINE_SEP / 2, LINE_SEP / 2, C_BLACK)
+
     ]
     @font3 = Font.new(40)
     @trn_img1 = Image.load("image/haikei_white.png")
@@ -29,6 +37,7 @@ class Board
   # 石の入れ替えイベント用変数
     @random_num = rand(2..10)
     # p @random_num
+    
   # 手番のプレイヤーを表す変数
     @first_player = first_player
     @second_player = second_player
@@ -44,13 +53,40 @@ class Board
     @stonecount = 0
     mx, my = Input.mouse_x, Input.mouse_y
     cx, cy = mx / LINE_SEP, my / LINE_SEP
-    if @turn_color == 0
+    if cx <  8 && cy < 8
+      if Input.mouse_push?(M_LBUTTON)
+        # コマを置ける場合、描画する
+        directions = judge(cx, cy)
+        # 置きたいコマの周囲に相手の石がない場合、ターミナルに「置けないよ」と表示する
+        if directions.empty?
+          puts "置けないよ" 
+        # 相手の石があってもひっくり返せない場合は
+        else
+          reverse_pos = return_reverse_pos(directions, cx, cy)
+          # ひっくり返せるマスがない場合
+          if reverse_pos.empty?
+            puts "ひっくり返せるコマがないよ"
+          # ひっくり返せるマスがある場合
+          else
+            # ひっくり返す
+            reverse_stones(reverse_pos)
+            # 石を置く
+            set_chip(cx, cy)
+            # 盤面初期時に作成したインスタンス変数@random_numがターン数と一致した場合
+            # if @random_num == @turn 
+            # # 自分と相手の石を反転させる処理
+            #   reverse_color
+            # end
+          end
+
+    if @turn_color != 0
       Window.draw(550, 185, @trn_img1)
       Window.draw_font(550, 185, "きみのターン！", @font3, {:color => C_RED})
     else
       Window.draw(550, 485, @trn_img2)
       Window.draw_font(550, 485, "きみのターン！", @font3, {:color => C_YELLOW})
     end
+<<<<<<< HEAD
     if Input.mouse_push?(M_LBUTTON)
       # コマを置ける場合、描画する
       directions = judge(cx, cy)
@@ -83,6 +119,8 @@ class Board
           #   reverse_color
           # end
 
+=======
+>>>>>>> 87403ad20f085c0c9d09414f2c04ae214d848691
       # プレイヤーの点数を加点する
           if @turn_color == 1
             @first_player.point +=1
@@ -211,7 +249,7 @@ class Board
             reverse_col += direction[1]
       
             tmp_pos << [reverse_row, reverse_col]
-            #p tmp_pos
+            
             # ループの中で配列の外を参照しそうになった時、ループを外に出せる
             if reverse_col < 0 || reverse_col > 7 || reverse_row < 0 || reverse_row > 7
               break
@@ -288,12 +326,18 @@ class Board
  
   #　盤面を描画する
   def draw_lines
-    LINE_SEP.step(Window.width / 2, LINE_SEP) do |dx|
-      Window.draw_line(dx, 50, dx, Window.height, C_WHITE)
+    count = 0
+    LINE_SEP.step(Window.width, LINE_SEP) do |dx|
+      break if count > 7
+      Window.draw_line(dx, 0, dx, Window.height - 90, C_WHITE)
+      count += 1
     end
 
-    LINE_SEP.step(Window.height / 2, LINE_SEP) do |dy|
-      Window.draw_line(50, dy, Window.width, dy, C_WHITE)
+    count = 0
+    LINE_SEP.step(Window.height, LINE_SEP) do |dy|
+      break if count > 7
+      Window.draw_line(0, dy, Window.width - 290 , dy, C_WHITE)
+      count += 1
     end
   end
 end
