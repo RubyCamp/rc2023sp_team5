@@ -155,7 +155,7 @@ class Board
             if reverse_col < 0 || reverse_col > 7 || reverse_row < 0 || reverse_row > 7
               break
             end
-           
+          
           # 手番と同じ色のコマに到達したらフラグをtrueにして探索終了
           elsif @data[reverse_col][reverse_row] == @turn_color
             reverse_flag = true
