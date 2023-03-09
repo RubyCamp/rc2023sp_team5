@@ -3,7 +3,7 @@
 
 class Board
   attr_accessor :turn, :game_end
-  LINE_SEP = 32
+  LINE_SEP = 40
 
   # 盤面を初期化
   def initialize(first_player, second_player)
@@ -18,12 +18,16 @@ class Board
     @data << [-1, -1, -1, -1, -1, -1, -1, -1]
     @turn = 1
     @chips = [
-      Image.new(LINE_SEP, LINE_SEP).circle_fill(LINE_SEP / 2, LINE_SEP / 2, LINE_SEP / 2, C_BLUE),
-      Image.new(LINE_SEP, LINE_SEP).circle_fill(LINE_SEP / 2, LINE_SEP / 2, LINE_SEP / 2, C_YELLOW)
+      Image.new(LINE_SEP, LINE_SEP).circle_fill(LINE_SEP / 2, LINE_SEP / 2, LINE_SEP / 2, C_WHITE),
+      Image.new(LINE_SEP, LINE_SEP).circle_fill(LINE_SEP / 2, LINE_SEP / 2, LINE_SEP / 2, C_BLACK)
     ]
+    @font3 = Font.new(40)
+    @trn_img1 = Image.load("image/haikei_white.png")
+    @trn_img2 = Image.load("image/haikei_black.png")
+
   # 石の入れ替えイベント用変数
     @random_num = rand(2..10)
-    p @random_num
+    # p @random_num
   # 手番のプレイヤーを表す変数
     @first_player = first_player
     @second_player = second_player
@@ -31,11 +35,19 @@ class Board
     @game_end = false
     @doublepoint1p = false
     @doublepoint2p = false
+    @stonecount = 0
   end
 
   def update
     mx, my = Input.mouse_x, Input.mouse_y
     cx, cy = mx / LINE_SEP, my / LINE_SEP
+    if @turn_color == 0
+      Window.draw(550, 185, @trn_img1)
+      Window.draw_font(550, 185, "きみのターン！", @font3, {:color => C_RED})
+    else
+      Window.draw(550, 485, @trn_img2)
+      Window.draw_font(550, 485, "きみのターン！", @font3, {:color => C_YELLOW})
+    end
     if Input.mouse_push?(M_LBUTTON)
       # コマを置ける場合、描画する
       directions = judge(cx, cy)
@@ -54,24 +66,34 @@ class Board
           reverse_stones(reverse_pos)
           # 石を置く
           set_chip(cx, cy)
+          @stonecount += 1 
+          puts @stonecount
           # 盤面初期時に作成したインスタンス変数@random_numがターン数と一致した場合
           # if @random_num == @turn 
           # # 自分と相手の石を反転させる処理
           #   reverse_color
           # end
 
-          # プレイヤーの点数を加点する
+      # プレイヤーの点数を加点する
           if @turn_color == 1
             @first_player.point +=1
             if @doublepoint1p
               plus_point(@first_player)
               @doublepoint1p = false
             end
+            if stonecount >= 3
+              plus_point(@first_player)
+              stonecount = 0
+            end
           else
             @second_player.point +=1
             if @doublepoint2p
-              plus_point(@first_player)
+              plus_point(@second_player)
               @doublepoint1p = false
+            end
+            if stonecount >= 3
+              plus_point(@second_player)
+              stonecount = 0
             end
           end
         end
@@ -183,7 +205,7 @@ class Board
             if reverse_col < 0 || reverse_col > 7 || reverse_row < 0 || reverse_row > 7
               break
             end
-           
+          
           # 手番と同じ色のコマに到達したらフラグをtrueにして探索終了
           elsif @data[reverse_col][reverse_row] == @turn_color
             reverse_flag = true
@@ -231,7 +253,7 @@ class Board
       end
     end
   end
-
+  
   # 1ターン飛ばすメソッド
   def turnskip
     @turn += 1
@@ -243,6 +265,7 @@ class Board
     player.point += plus_point
   end
 
+  # ポイント二倍フラグをオンにするメソッド
   def doublepointflag(turn)
     if turn == 1
       @doublepoint1p = true
@@ -250,8 +273,7 @@ class Board
       @doublepoint2p = true
     end
   end
-      
-
+ 
   #　盤面を描画する
   def draw_lines
     LINE_SEP.step(Window.width / 2, LINE_SEP) do |dx|

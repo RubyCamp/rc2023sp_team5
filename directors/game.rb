@@ -5,7 +5,11 @@ module Directors
           @bg_img = Image.load("image/game_ui2.jpg")
           @heximage = Image.load('image/Hex50x58.png')
           @imgwidth,@imghaight = 50,58
-          @font = Font.new(64)
+
+          @font1 = Font.new(64)
+          @font2 = Font.new(50)
+          
+
           @first_player = Player.new(1)
           @second_player = Player.new(0)
           # 盤面の初期化
@@ -15,10 +19,17 @@ module Directors
         def play
           Window.draw(0, 0, @bg_img)
 
-          Window.draw_font(660, 10, "先手", @font, {:color => C_GREEN})
-          Window.draw_font(660, 310, "後手", @font, {:color => C_GREEN})
-          Window.draw_font(550, 190, "先手:#{@first_player.point}pt", @font, {:color => C_GREEN})
-          Window.draw_font(550, 490, "後手:#{@second_player.point}pt", @font, {:color => C_GREEN})
+           
+         
+
+
+          Window.draw_font(660, 10, "先手", @font1, {:color => C_GREEN})
+          Window.draw_font(660, 310, "後手", @font1, {:color => C_GREEN})
+          Window.draw_font(550, 115, "先手:#{@first_player.point}pt", @font2, {:color => C_GREEN})
+          Window.draw_font(550, 415, "後手:#{@second_player.point}pt", @font2, {:color => C_GREEN})
+          #Window.draw_font(550, 485, "きみのターン！", @font3, {:color => C_YELLOW})
+
+
           hexagons = []
           evenflag = false
           start_x  = 75
