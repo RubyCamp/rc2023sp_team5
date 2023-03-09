@@ -21,6 +21,10 @@ class Board
       Image.new(LINE_SEP, LINE_SEP).circle_fill(LINE_SEP / 2, LINE_SEP / 2, LINE_SEP / 2, C_BLUE),
       Image.new(LINE_SEP, LINE_SEP).circle_fill(LINE_SEP / 2, LINE_SEP / 2, LINE_SEP / 2, C_YELLOW)
     ]
+    @font3 = Font.new(40)
+    @trn_img1 = Image.load("image/haikei_white.png")
+    @trn_img2 = Image.load("image/haikei_black.png")
+
   # 石の入れ替えイベント用変数
     @random_num = rand(2..10)
     p @random_num
@@ -36,6 +40,15 @@ class Board
   def update
     mx, my = Input.mouse_x, Input.mouse_y
     cx, cy = mx / LINE_SEP, my / LINE_SEP
+
+    if @turn_color == 0
+      Window.draw(550, 185, @trn_img1)
+      Window.draw_font(550, 185, "きみのターン！", @font3, {:color => C_RED})
+    else
+      Window.draw(550, 485, @trn_img2)
+      Window.draw_font(550, 485, "きみのターン！", @font3, {:color => C_YELLOW})
+    end
+
     if Input.mouse_push?(M_LBUTTON)
       # コマを置ける場合、描画する
       directions = judge(cx, cy)
@@ -60,7 +73,7 @@ class Board
           #   reverse_color
           # end
 
-          # プレイヤーの点数を加点する
+      # プレイヤーの点数を加点する
           if @turn_color == 1
             @first_player.point +=1
             if @doublepoint1p
@@ -74,7 +87,6 @@ class Board
               @doublepoint1p = false
             end
           end
-        end
       end
     end
     # ゲーム終了を監視する
@@ -231,7 +243,7 @@ class Board
       end
     end
   end
-
+  
   # 1ターン飛ばすメソッド
   def turnskip
     @turn += 1
@@ -242,16 +254,15 @@ class Board
     plus_point = 1
     player.point += plus_point
   end
-
-  def doublepointflag(turn)
+ 
+   def doublepointflag(turn)
     if turn == 1
       @doublepoint1p = true
     else
       @doublepoint2p = true
     end
   end
-      
-
+ 
   #　盤面を描画する
   def draw_lines
     LINE_SEP.step(Window.width / 2, LINE_SEP) do |dx|
