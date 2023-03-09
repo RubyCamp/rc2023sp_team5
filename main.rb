@@ -18,7 +18,6 @@ game_director = Directors::Game.new(ending_director)
 title_director = Directors::Title.new(game_director)
 
 ending_director.next_director = title_director
-
 current_director = title_director
 
 Window.loop do
