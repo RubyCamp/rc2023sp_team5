@@ -2,9 +2,8 @@
 # 盤面の表示とコマを置くメソッド以外は下山が実装しました。
 
 class Board
-  attr_accessor :turn, :game_end
-  LINE_SEP = 40
-
+  attr_accessor :turn, :game_end, :can_play
+  LINE_SEP = 64
   # 盤面を初期化
   def initialize(first_player, second_player)
     @data = []
@@ -16,18 +15,21 @@ class Board
     @data << [-1, -1, -1, -1, -1, -1, -1, -1]
     @data << [-1, -1, -1, -1, -1, -1, -1, -1]
     @data << [-1, -1, -1, -1, -1, -1, -1, -1]
-    @turn = 1
+    @turn = 1 # ターンを表わす変数
     @chips = [
       Image.new(LINE_SEP, LINE_SEP).circle_fill(LINE_SEP / 2, LINE_SEP / 2, LINE_SEP / 2, C_WHITE),
       Image.new(LINE_SEP, LINE_SEP).circle_fill(LINE_SEP / 2, LINE_SEP / 2, LINE_SEP / 2, C_BLACK)
+
     ]
     @font3 = Font.new(40)
     @trn_img1 = Image.load("image/haikei_white.png")
     @trn_img2 = Image.load("image/haikei_black.png")
+    @sound1 = Sound.new("sound/othello_02.wav")
 
   # 石の入れ替えイベント用変数
     @random_num = rand(2..10)
     # p @random_num
+    
   # 手番のプレイヤーを表す変数
     @first_player = first_player
     @second_player = second_player
@@ -35,76 +37,70 @@ class Board
     @game_end = false
     @doublepoint1p = false
     @doublepoint2p = false
+
+    # ひっくり返した石の個数を数える変数
+    @stonecount = 0
+
+    @can_play = true
+    @skip_event = 3
+    @skip_event_flag =false
+
   end
 
   def update
-    @stonecount = 0
     mx, my = Input.mouse_x, Input.mouse_y
     cx, cy = mx / LINE_SEP, my / LINE_SEP
-    if @turn_color == 0
-      Window.draw(550, 185, @trn_img1)
-      Window.draw_font(550, 185, "きみのターン！", @font3, {:color => C_RED})
-    else
-      Window.draw(550, 485, @trn_img2)
-      Window.draw_font(550, 485, "きみのターン！", @font3, {:color => C_YELLOW})
-    end
-    if Input.mouse_push?(M_LBUTTON)
-      # コマを置ける場合、描画する
-      directions = judge(cx, cy)
-      # 置きたいコマの周囲に相手の石がない場合、ターミナルに「置けないよ」と表示する
-      if directions.empty?
-        puts "置けないよ" 
-      # 相手の石があってもひっくり返せない場合は
-      else
-        reverse_pos = return_reverse_pos(directions, cx, cy)
-        # ひっくり返せるマスがない場合
-        if reverse_pos.empty?
-          puts "ひっくり返せるコマがないよ"
-        # ひっくり返せるマスがある場合
+    # 盤面の中をクリックした場合
+    if cx <  8 && cy < 8
+      if Input.mouse_push?(M_LBUTTON)
+        # コマを置ける場合、描画する
+        directions = judge(cx, cy)
+        # 置きたいコマの周囲に相手の石がない場合、ターミナルに「置けないよ」と表示する
+        if directions.empty?
+          puts "置けないよ" 
+        # 相手の石があってもひっくり返せない場合は
         else
-          # ひっくり返す
-          reverse_stones(reverse_pos)
-          # 石を置く
-          set_chip(cx, cy)
-          # 盤面初期時に作成したインスタンス変数@random_numがターン数と一致した場合
-          # if @random_num == @turn 
-          # # 自分と相手の石を反転させる処理
-          #   reverse_color
-          # end
-
-      # プレイヤーの点数を加点する
-          if @turn_color == 1
-            @first_player.point +=1
-            #　ポイント2倍フラグがオンの時追加で1点
-            if @doublepoint1p
-              plus_point(@first_player)
-              @doublepoint1p = false
-            end
-            #　3個以上ひっくり返したときに追加で1点
-            if @stonecount >= 3
-              plus_point(@first_player)
-              @stonecount = 0
-            end
+          reverse_pos = return_reverse_pos(directions, cx, cy)
+          # ひっくり返せるマスがない場合
+          if reverse_pos.empty?
+            puts "ひっくり返せるコマがないよ"
+          # ひっくり返せるマスがある場合
           else
-            @second_player.point +=1
-            if @doublepoint2p
-              plus_point(@second_player)
-              @doublepoint1p = false
+            # ひっくり返す
+            reverse_stones(reverse_pos)
+            # 石を置く
+            set_chip(cx, cy)
+            # 石を置く音を鳴らす
+            @sound1.play
+            if @skip_event == @turn
+              turnskip
             end
-            if @stonecount >= 3
-              plus_point(@second_player)
-              @stonecount = 0
+            if @skip_event_flag == true && @turn > @skip_event+1
+              @skip_event_flag = false
             end
+            # 盤面初期時に作成したインスタンス変数@random_numがターン数と一致した場合
+            # if @random_num == @turn 
+            # # 自分と相手の石を反転させる処理
+            #   reverse_color
+            # end
           end
         end
+        if @turn_color != 0
+          Window.draw(550, 185, @trn_img1)
+          Window.draw_font(550, 185, "きみのターン！", @font3, {:color => C_RED})
+        else
+          Window.draw(550, 485, @trn_img2)
+          Window.draw_font(550, 485, "きみのターン！", @font3, {:color => C_YELLOW})
+        end
       end
-    end
+    end # コマを裏返す処理終了
+  
     # ゲーム終了を監視する
     if game_end?
       puts 'ゲームを終了します'
     end
-  end
-
+  end # update関数終了
+  
   # コマを表示
   def draw
     draw_lines
@@ -112,6 +108,9 @@ class Board
       line.each_with_index do |chip, dx|
         Window.draw(dx * LINE_SEP, dy * LINE_SEP, @chips[chip]) if chip >= 0
       end
+    end
+    if @skip_event_flag == true
+      Window.draw_font(250, 550, "追加ターン！！", @font3, {:color => C_RED})
     end
   end
 
@@ -128,8 +127,7 @@ class Board
       # すべてのマスを探索し裏返せるコマがない場合trueを返す
       @game_end = true
       return @game_end
-    end
-
+  end
 
   private
 
@@ -200,7 +198,7 @@ class Board
             reverse_col += direction[1]
       
             tmp_pos << [reverse_row, reverse_col]
-            p tmp_pos
+            
             # ループの中で配列の外を参照しそうになった時、ループを外に出せる
             if reverse_col < 0 || reverse_col > 7 || reverse_row < 0 || reverse_row > 7
               break
@@ -237,6 +235,7 @@ class Board
       else
         @second_player.point +=1
       end
+      # ひっくり返した石の個数を数える変数
       @stonecount += 1
     end
   end
@@ -258,6 +257,7 @@ class Board
   # 1ターン飛ばすメソッド
   def turnskip
     @turn += 1
+    @skip_event_flag =true
   end
 
   # playerのポイントを加算するメソッド
@@ -274,15 +274,49 @@ class Board
       @doublepoint2p = true
     end
   end
- 
+
+  # ポイント関係のイベントメソッド
+  def point_event
+    if @turn_color == 1
+      @first_player.point +=1
+      #　ポイント2倍フラグがオンの時追加で1点
+      if @doublepoint1p
+        plus_point(@first_player)
+        @doublepoint1p = false
+      end
+      #　3個以上ひっくり返したときに追加で1点
+      if @stonecount >= 3
+        plus_point(@first_player)
+        @stonecount = 0
+      end
+    else
+      @second_player.point +=1
+      if @doublepoint2p
+        plus_point(@second_player)
+        @doublepoint1p = false
+      end
+      if @stonecount >= 3
+        plus_point(@second_player)
+        @stonecount = 0
+      end
+    end
+  end
+  
   #　盤面を描画する
   def draw_lines
-    LINE_SEP.step(Window.width / 2, LINE_SEP) do |dx|
-      Window.draw_line(dx, 50, dx, Window.height, C_WHITE)
+    count = 0
+    LINE_SEP.step(Window.width, LINE_SEP) do |dx|
+      break if count > 7
+      Window.draw_line(dx, 0, dx, Window.height - 90, C_WHITE)
+      count += 1
     end
+  
 
-    LINE_SEP.step(Window.height / 2, LINE_SEP) do |dy|
-      Window.draw_line(50, dy, Window.width, dy, C_WHITE)
+    count = 0
+    LINE_SEP.step(Window.height, LINE_SEP) do |dy|
+      break if count > 7
+      Window.draw_line(0, dy, Window.width - 290 , dy, C_WHITE)
+      count += 1
     end
   end
 end
