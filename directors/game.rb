@@ -1,6 +1,5 @@
 module Directors
 
-
   class Game
     def initialize(next_director)
       @next_director = next_director
@@ -73,8 +72,10 @@ module Directors
         # ending_directorに勝者の情報を渡す
         if @first_player.point > @second_player.point
           @next_director.winner = 1
+          @next_director.winner_point = @first_player.point
         else 
           @next_director.winner = 2
+          @next_director.winner_point = @second_player.point
         end
         # 勝利時の音楽を鳴らす
         @winning_bgm.play
