@@ -1,4 +1,5 @@
 module Directors
+
   class Game
     def initialize(next_director)
       @next_director = next_director

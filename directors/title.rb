@@ -3,6 +3,9 @@ module Directors
         def initialize(next_director)
           @next_director = next_director
           @bg_img = Image.load("image/start_2.jpg")
+          @sound = Sound.new("sound/kuma.mid")
+          @sound.play
+          p "Sound"
         end
     
         def play
