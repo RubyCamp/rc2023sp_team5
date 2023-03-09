@@ -73,13 +73,20 @@ class Board
           #   reverse_color
           # end
 
-          # プレイヤーの点数を加点する
+      # プレイヤーの点数を加点する
           if @turn_color == 1
             @first_player.point +=1
+            if @doublepoint1p
+              plus_point(@first_player)
+              @doublepoint1p = false
+            end
           else
             @second_player.point +=1
+            if @doublepoint2p
+              plus_point(@first_player)
+              @doublepoint1p = false
+            end
           end
-        end
       end
     end
     # ゲーム終了を監視する
